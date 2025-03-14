@@ -10,8 +10,8 @@ const port = process.env.PORT;
 app.use( cors( ) );
 app.use( express.json() );
 app.use( "/api", routes );
-dbConnect();
 app.listen( port, ( ) => {
+    dbConnect();
     console.log( `Server is running on thee port ${ port }` );
 })
 

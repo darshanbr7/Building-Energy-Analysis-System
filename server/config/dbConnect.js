@@ -17,3 +17,11 @@ const dbConnect =  async ( ) => {
     }
 }
 export default dbConnect;
+
+const dbConnect1 =  new Promise( ( resolve, reject ) => {
+   ( ( ) => {
+    const db_url = process.env.DB_URL
+   
+}  
+)()
+})

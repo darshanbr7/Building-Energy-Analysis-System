@@ -5,7 +5,7 @@ const buildingController = {}
 
 /**
  * Creates a new building record in the database.
-  * @param {Object} req - The request object containing the data for the new building in the body.
+ * @param {Object} req - The request object containing the data for the new building in the body.
  * @param {Object} res - The response object used to send back the result of the creation.
  * 
  * @returns {Object} - A JSON response containing the newly created building object if successful,

@@ -4,9 +4,6 @@ import { Box, Typography, Paper, Button } from "@mui/material";
 import axios from "axios";
 import Select from "react-select"; // Import Select from react-select
 import {
-  PieChart,
-  Pie,
-  Cell,
   BarChart,
   Bar,
   XAxis,
@@ -69,39 +66,21 @@ const ComparePage: React.FC = () => {
   const result1 = comparisonData?.result1;
   const result2 = comparisonData?.result2;
 
-  const facadeData1 = [
-    { name: "North", value: result1?.facadeResults?.north?.cost ?? 0 },
-    { name: "South", value: result1?.facadeResults?.south?.cost ?? 0 },
-    { name: "East", value: result1?.facadeResults?.east?.cost ?? 0 },
-    { name: "West", value: result1?.facadeResults?.west?.cost ?? 0 },
-    { name: "Roof", value: result1?.facadeResults?.roof?.cost ?? 0 }
-  ];
-  
-  const facadeData2 = [
-    { name: "North", value: result2?.facadeResults?.north?.cost ?? 0 },
-    { name: "South", value: result2?.facadeResults?.south?.cost ?? 0 },
-    { name: "East", value: result2?.facadeResults?.east?.cost ?? 0 },
-    { name: "West", value: result2?.facadeResults?.west?.cost ?? 0 },
-    { name: "Roof", value: result2?.facadeResults?.roof?.cost ?? 0 }
-  ];
-  
-
-  // Bar chart data
-  const totalMetrics1 = [
-    { name: "Heat Gain (BTU)", value: result1?.totalHeatGainBTU },
-    { name: "Cooling Load (kWh)", value: result1?.totalCoolingLoadKWh },
-    { name: "Energy Consumed (kWh)", value: result1?.totalEnergyConsumedKWh },
-    { name: "Cost ($)", value: result1?.totalCost }
+  const facadeMetrics = [
+    { name: "East", building1: result1?.facadeResults?.east?.cost ?? 0, building2: result2?.facadeResults?.east?.cost ?? 0 },
+    { name: "West", building1: result1?.facadeResults?.west?.cost ?? 0, building2: result2?.facadeResults?.west?.cost ?? 0 },
+    { name: "North", building1: result1?.facadeResults?.north?.cost ?? 0, building2: result2?.facadeResults?.north?.cost ?? 0 },
+    { name: "South", building1: result1?.facadeResults?.south?.cost ?? 0, building2: result2?.facadeResults?.south?.cost ?? 0 },
+    { name: "Roof", building1: result1?.facadeResults?.roof?.cost ?? 0, building2: result2?.facadeResults?.roof?.cost ?? 0 }
   ];
 
-  const totalMetrics2 = [
-    { name: "Heat Gain (BTU)", value: result2?.totalHeatGainBTU },
-    { name: "Cooling Load (kWh)", value: result2?.totalCoolingLoadKWh },
-    { name: "Energy Consumed (kWh)", value: result2?.totalEnergyConsumedKWh },
-    { name: "Cost ($)", value: result2?.totalCost }
+  const totalMetricsData = [
+    { name: "Heat Gain (BTU)", building1: result1?.totalHeatGainBTU ?? 0, building2: result2?.totalHeatGainBTU ?? 0 },
+    { name: "Cooling Load (kWh)", building1: result1?.totalCoolingLoadKWh ?? 0, building2: result2?.totalCoolingLoadKWh ?? 0 },
+    { name: "Energy Consumed (kWh)", building1: result1?.totalEnergyConsumedKWh ?? 0, building2: result2?.totalEnergyConsumedKWh ?? 0 },
+    { name: "Cost (₹)", building1: result1?.totalCost ?? 0, building2: result2?.totalCost ?? 0 }
   ];
 
-  // Prepare data for react-select (cities)
   const selectCities = [
     { value: "Mumbai", label: "Mumbai" },
     { value: "Bangalore", label: "Bangalore" },
@@ -160,42 +139,28 @@ const ComparePage: React.FC = () => {
           <Box sx={{ mt: 4 }}>
             <Typography variant="h6">Facade Comparison (Cost)</Typography>
             <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie data={facadeData1} dataKey="value" nameKey="name" outerRadius={100}>
-                  {facadeData1.map((entry, index) => (
-                    <Cell key={`cell-1-${index}`} fill={index % 2 === 0 ? "#8884d8" : "#82ca9d"} />
-                  ))}
-                </Pie>
-                <Pie data={facadeData2} dataKey="value" nameKey="name" outerRadius={100}>
-                  {facadeData2.map((entry, index) => (
-                    <Cell key={`cell-2-${index}`} fill={index % 2 === 0 ? "#ff7300" : "#ff6347"} />
-                  ))}
-                </Pie>
-              </PieChart>
+              <BarChart data={facadeMetrics}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <CartesianGrid strokeDasharray="3 3" />
+                <Bar dataKey="building1" name={selectedBuilding1?.name} fill="#8884d8" />
+                <Bar dataKey="building2" name={selectedBuilding2?.name} fill="#ff7300" />
+              </BarChart>
             </ResponsiveContainer>
           </Box>
 
           <Box sx={{ mt: 4 }}>
             <Typography variant="h6">Total Metrics Comparison</Typography>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={totalMetrics1}>
+              <BarChart data={totalMetricsData}>
                 <XAxis dataKey="name" />
-                <YAxis />
                 <Tooltip />
                 <Legend />
                 <CartesianGrid strokeDasharray="3 3" />
-                <Bar dataKey="value" fill="#8884d8" />
-              </BarChart>
-            </ResponsiveContainer>
-
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={totalMetrics2}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <CartesianGrid strokeDasharray="3 3" />
-                <Bar dataKey="value" fill="#ff7300" />
+                <Bar dataKey="building1" name={selectedBuilding1?.name} fill="#8884d8" />
+                <Bar dataKey="building2" name={selectedBuilding2?.name} fill="#ff7300" />
               </BarChart>
             </ResponsiveContainer>
           </Box>
@@ -203,6 +168,6 @@ const ComparePage: React.FC = () => {
       )}
     </Box>
   );
-};  
+};
 
 export default ComparePage;

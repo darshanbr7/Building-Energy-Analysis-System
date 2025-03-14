@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Paper, Button, Select, MenuItem, CircularProgress } from "@mui/material";
+import { Box, Typography, Paper, Button, Select, MenuItem, CircularProgress, Card, CardContent } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from "recharts";
@@ -58,6 +58,8 @@ const BuildingDetails: React.FC = () => {
   const [citiesData, setCitiesData] = useState<CityData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log("aa", analysisData);
+
   useEffect(() => {
     if (building) {
       fetchCityData(selectedCity);
@@ -88,16 +90,6 @@ const BuildingDetails: React.FC = () => {
 
   const sortedCities = [...citiesData].sort((a, b) => b.totalCost - a.totalCost);
 
-  const barChartData = [
-    {
-      name: "Total",
-      heatGain: analysisData?.totalHeatGainBTU || 0,
-      coolingLoad: analysisData?.totalCoolingLoadKWh || 0,
-      energyConsumed: analysisData?.totalEnergyConsumedKWh || 0,
-      cost: analysisData?.totalCost || 0,
-    },
-  ];
-
   const facadeData = Object.entries(analysisData?.facadeResults || {}).map(([key, data]) => (data ? {
     name: key,
     value: data.cost,
@@ -105,7 +97,7 @@ const BuildingDetails: React.FC = () => {
     heatGain: data.heatGainBTU,
     coolingLoad: data.coolingLoadKWh,
     energyConsumed: data.energyConsumedKWh,
-    cost : data.cost
+    cost: data.cost
   } : null)).filter(item => item !== null);
 
   const cityBarChartData = sortedCities.map((cityData) => ({
@@ -179,7 +171,6 @@ const BuildingDetails: React.FC = () => {
             onChange={(e) => setSelectedCity(e.target.value)}
             fullWidth
             sx={{ mb: 2 }}
-            
           >
             {cities.map((city) => (
               <MenuItem key={city} value={city}>
@@ -195,19 +186,15 @@ const BuildingDetails: React.FC = () => {
         {analysisData && (
           <Box sx={{ mt: 4 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>Total Analysis</Typography>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={barChartData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <CartesianGrid strokeDasharray="3 3" />
-                <Bar dataKey="heatGain" fill="#8884d8" />
-                <Bar dataKey="coolingLoad" fill="#82ca9d" />
-                <Bar dataKey="energyConsumed" fill="#ffc658" />
-                <Bar dataKey="cost" fill="#ff7300" />
-              </BarChart>
-            </ResponsiveContainer>
+            <Card variant="outlined" sx={{ marginBottom: 2 }}>
+              <CardContent>
+                <Typography variant="h6">Summary</Typography>
+                <Typography variant="body1">Total Cooling Load: {analysisData.totalCoolingLoadKWh.toFixed(2)} KWh</Typography>
+                <Typography variant="body1">Total Energy Consumed: {analysisData.totalEnergyConsumedKWh.toFixed(2)} KWh</Typography>
+                <Typography variant="body1">Total Heat Gain: {analysisData.totalHeatGainBTU.toFixed(2)} BTU</Typography>
+                <Typography variant="body1">Total Cost: ${analysisData.totalCost.toFixed(2)}</Typography>
+              </CardContent>
+            </Card>
 
             <Typography variant="h6" sx={{ mb: 2 }}>Facade Analysis</Typography>
             <ResponsiveContainer width="100%" height={300}>
@@ -228,7 +215,7 @@ const BuildingDetails: React.FC = () => {
               </PieChart>
             </ResponsiveContainer>
 
-            <Typography variant="h6" sx={{ mb: 2 }}>City Ranking by Total Cost by Per Hours</Typography>
+            <Typography variant="h6" sx={{ mb: 2 }}>City Ranking by Total Cost</Typography>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={cityBarChartData}>
                 <XAxis dataKey="name" />

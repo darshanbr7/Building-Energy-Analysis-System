@@ -37,7 +37,7 @@ const Home: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const buildingData = location.state?.building;
-  
+
   const [formData, setFormData] = useState<BuildingFormData>({
     name: buildingData?.name || "",
     height: buildingData?.height || 0,
@@ -148,8 +148,14 @@ const Home: React.FC = () => {
     e.preventDefault();
 
     if (validateForm()) {
-      const buildingData = { ...formData, skylight };
-      mutation.mutate(buildingData);
+      if (skylight.height > 0 && skylight.width > 0) {
+        const buildingData = { ...formData, skylight };
+        mutation.mutate(buildingData);
+      } else {
+        const buildingData = { ...formData };
+        mutation.mutate(buildingData);
+      }
+
     }
   };
 
